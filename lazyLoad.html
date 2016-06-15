@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>懒加载</title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+		}
+		.wrapper {
+			width: 1200px;
+			margin: 0 auto;
+		}
+		.wrapper:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
+		.wrapper li {
+			list-style: none;
+			float: left;
+			margin: 10px;
+		}
+		img {
+			width: 380px;
+			height: 300px;
+		}
+	</style>
+</head>
+<body>
+	<ul class="wrapper">
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2659/181/1401401417/173310/9a942687/573d2897N1fb57add.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2845/71/1407058180/101533/d3a68c0b/573d9aa5N3184c80f.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2758/237/1461006407/114000/7a25a642/573edf28Nb3951506.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2659/181/1401401417/173310/9a942687/573d2897N1fb57add.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2845/71/1407058180/101533/d3a68c0b/573d9aa5N3184c80f.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2758/237/1461006407/114000/7a25a642/573edf28Nb3951506.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2659/181/1401401417/173310/9a942687/573d2897N1fb57add.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2845/71/1407058180/101533/d3a68c0b/573d9aa5N3184c80f.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2758/237/1461006407/114000/7a25a642/573edf28Nb3951506.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2659/181/1401401417/173310/9a942687/573d2897N1fb57add.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2845/71/1407058180/101533/d3a68c0b/573d9aa5N3184c80f.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2758/237/1461006407/114000/7a25a642/573edf28Nb3951506.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2659/181/1401401417/173310/9a942687/573d2897N1fb57add.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2845/71/1407058180/101533/d3a68c0b/573d9aa5N3184c80f.jpg" alt=""></a></li>
+		<li><a href="#"><img src="http://img.zcool.cn/community/01ff2756629d096ac725b2c8e95102.gif" data-img="http://img30.360buyimg.com/da/jfs/t2758/237/1461006407/114000/7a25a642/573edf28Nb3951506.jpg" alt=""></a></li>
+
+	</ul>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+	var clock;
+	checkShow();
+	$(window).on('scroll',function(){
+		if(clock) {
+			clearTimeout(clock);
+		};
+		clock = setTimeout(function(){
+			checkShow();
+		},3000)
+	});
+
+	function checkShow() {
+		$(".wrapper img").each(function(){
+			var $cur = $(this);
+			if($cur.attr('isLoaded')) {
+				return;
+			}
+			if(isShow($cur)) {
+				showImg($cur);
+			}
+		});
+	}
+
+	function isShow($node) {
+		var winHeight = $(window).height(),
+			scrollTop = $(window).scrollTop(),
+			offsetTop = $node.offset().top;
+		if(scrollTop+winHeight >= offsetTop ){
+          return true;
+    	}else{
+         return false; 
+    	}
+	}
+
+	function showImg($node) {
+		$node.attr('src',$node.attr('data-img'));
+		$node.attr('isLoaded',true);
+	}
+</script>
+</body>
+</html>
